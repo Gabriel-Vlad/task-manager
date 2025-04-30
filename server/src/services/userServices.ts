@@ -1,11 +1,9 @@
 import prisma from "../index";
-import { BadRequest } from "../errors";
-import type { User, Task } from "../types/userTypes";
+import { BadRequest, NotFound, Unauthenticated } from "../errors";
+import type { User } from "../generated/prisma";
+import comparePasswords from "../utils/compare-passwords";
 import bcrypt from "bcrypt";
-import validator from "validator";
-
-const MIN_PASSWORD_LENGTH = 6;
-const MIN_NAME_LENGTH = 4;
+import { verifyEmail, verifyName, verifyPassword } from "../utils/verify-input";
 
 export const registerUserPrisma = async (props: Partial<User>): Promise<User> => {
   const { name, email, password } = props;
@@ -14,16 +12,18 @@ export const registerUserPrisma = async (props: Partial<User>): Promise<User> =>
     throw new BadRequest("Missing required fields");
   }
 
-  if (!validator.isEmail(email)) {
-    throw new BadRequest("Email is invalid");
-  }
+  verifyEmail(email);
+  verifyName(name);
+  verifyPassword(password);
 
-  if (name.length < MIN_NAME_LENGTH) {
-    throw new BadRequest(`Name must be at least ${MIN_NAME_LENGTH} characters long`);
-  }
+  const userFromPrisma: User | null = await prisma.user.findUnique({
+    where: {
+      email,
+    },
+  });
 
-  if (password.length < MIN_PASSWORD_LENGTH) {
-    throw new BadRequest(`Password must be at least ${MIN_PASSWORD_LENGTH} characters long`);
+  if (userFromPrisma) {
+    throw new BadRequest("User already exists");
   }
 
   const salt: string = await bcrypt.genSalt(10);
@@ -36,15 +36,33 @@ export const registerUserPrisma = async (props: Partial<User>): Promise<User> =>
       password: newPassword,
     },
   });
+  console.log(user);
 
   return user;
 };
 
-export const loginUserPrisma = async (userId: string, props: Partial<User>): Promise<void> => {
-  return;
-};
+export const loginUserPrisma = async (props: Partial<User>): Promise<User> => {
+  const { name, email, password } = props;
 
-export const getAllUsersPrisma = async (): Promise<User[]> => {
-  const users = await prisma.user.findMany({});
-  return users;
+  if (!name || !email || !password) {
+    throw new BadRequest("Missing required fields");
+  }
+
+  const user: User | null = await prisma.user.findUnique({
+    where: {
+      email,
+    },
+  });
+
+  if (!user) {
+    throw new NotFound("No user has been found");
+  }
+
+  const isMatch = await comparePasswords(user.password, password);
+
+  if (!isMatch) {
+    throw new Unauthenticated("Invalid Credentials");
+  }
+
+  return user;
 };

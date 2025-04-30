@@ -10,6 +10,7 @@ const prisma = new PrismaClient();
 import express from "express";
 const app = express();
 
+import adminRouter from "./routes/admin";
 import authRouter from "./routes/auth";
 
 import notFound from "./middleware/not-found";
@@ -24,6 +25,7 @@ app.use(
 );
 app.use(cookieParser());
 
+app.use("/api/v1/admin", adminRouter);
 app.use("/api/v1/auth", authRouter);
 
 const PORT = process.env.PORT || 3000;

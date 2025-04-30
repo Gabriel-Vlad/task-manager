@@ -122,7 +122,8 @@ exports.Prisma.UserScalarFieldEnum = {
   name: 'name',
   email: 'email',
   password: 'password',
-  createdAt: 'createdAt'
+  createdAt: 'createdAt',
+  role: 'role'
 };
 
 exports.Prisma.TaskScalarFieldEnum = {
@@ -145,6 +146,11 @@ exports.Prisma.QueryMode = {
   default: 'default',
   insensitive: 'insensitive'
 };
+exports.Role = exports.$Enums.Role = {
+  USER: 'USER',
+  ADMIN: 'ADMIN'
+};
+
 exports.Status = exports.$Enums.Status = {
   COMPLETED: 'COMPLETED',
   INCOMPLETE: 'INCOMPLETE'

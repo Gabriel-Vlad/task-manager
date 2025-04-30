@@ -3,6 +3,11 @@ export enum TaskStatus {
   COMPLETED = "COMPLETED",
 }
 
+export enum Role {
+  USER = "USER",
+  ADMIN = "ADMIN",
+}
+
 export interface Task {
   id: string;
   title: string;
@@ -19,5 +24,6 @@ export interface User {
   email: string;
   password: string;
   createdAt: Date;
+  role: Role;
   tasks?: Task[] | undefined;
 }
