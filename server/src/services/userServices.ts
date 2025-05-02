@@ -2,8 +2,8 @@ import prisma from "../index";
 import { BadRequest, NotFound, Unauthenticated } from "../errors";
 import type { User } from "../generated/prisma";
 import comparePasswords from "../utils/compare-passwords";
-import bcrypt from "bcrypt";
 import { verifyEmail, verifyName, verifyPassword } from "../utils/verify-input";
+import hashInput from "../utils/hash-input";
 
 export const registerUserPrisma = async (props: Partial<User>): Promise<User> => {
   const { name, email, password } = props;
@@ -26,8 +26,7 @@ export const registerUserPrisma = async (props: Partial<User>): Promise<User> =>
     throw new BadRequest("User already exists");
   }
 
-  const salt: string = await bcrypt.genSalt(10);
-  const newPassword: string = await bcrypt.hash(password, salt);
+  const newPassword: string = await hashInput(password);
 
   const user = await prisma.user.create({
     data: {
@@ -36,7 +35,6 @@ export const registerUserPrisma = async (props: Partial<User>): Promise<User> =>
       password: newPassword,
     },
   });
-  console.log(user);
 
   return user;
 };

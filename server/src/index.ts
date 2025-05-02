@@ -12,6 +12,7 @@ const app = express();
 
 import adminRouter from "./routes/admin";
 import authRouter from "./routes/auth";
+import tasksRouter from "./routes/tasks";
 
 import notFound from "./middleware/not-found";
 import errorHandlerMiddleware from "./middleware/error-handler";
@@ -27,6 +28,7 @@ app.use(cookieParser());
 
 app.use("/api/v1/admin", adminRouter);
 app.use("/api/v1/auth", authRouter);
+app.use("/api/v1/tasks", tasksRouter);
 
 const PORT = process.env.PORT || 3000;
 

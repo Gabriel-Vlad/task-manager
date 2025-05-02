@@ -9,18 +9,8 @@ export const register = async (req: Request, res: Response): Promise<void> => {
   const user: User = await registerUserPrisma({ ...req.body });
 
   const token: string = generateJWT(user);
-  console.log(token);
 
-  res
-    .cookie("token", token, cookieOptions)
-    .status(StatusCodes.CREATED)
-    .json({
-      user: {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-      },
-    });
+  res.cookie("token", token, cookieOptions).status(StatusCodes.CREATED).json({ user });
 };
 
 export const login = async (req: Request, res: Response): Promise<void> => {
@@ -28,14 +18,9 @@ export const login = async (req: Request, res: Response): Promise<void> => {
 
   const token: string = generateJWT(user);
 
-  console.log("User logged in");
-
   res.cookie("token", token, cookieOptions).status(StatusCodes.OK).json({ user });
 };
 
 export const logout = async (req: Request, res: Response): Promise<void> => {
-  res
-    .clearCookie("token", cookieOptions)
-    .status(StatusCodes.OK)
-    .json({ msg: "Successfully logged out" });
+  res.clearCookie("token", cookieOptions).status(StatusCodes.OK).json({ msg: "Successfully logged out" });
 };

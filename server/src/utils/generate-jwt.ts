@@ -1,23 +1,25 @@
 import jwt, { SignOptions } from "jsonwebtoken";
 import type { User } from "../generated/prisma";
-const generateJWT = (user: User) => {
-  const { id, name, email } = user;
+import { JWTUserPayload } from "../types/userTypes";
 
-  const userData: Partial<User> = {
+const generateJWT = (user: User) => {
+  const { id, name } = user;
+
+  const userData: Pick<JWTUserPayload, "id" | "name"> = {
     id,
     name,
-    email,
   };
 
   const secret = process.env.JWT_SECRET as string;
   const lifetime = process.env.JWT_LIFETIME as string;
 
-  const options = {
+  const jwt_options = {
     expiresIn: lifetime,
     algorithm: "HS256",
   } as SignOptions;
 
-  const token = jwt.sign(userData, secret!, options);
+  const token = jwt.sign(userData, secret!, jwt_options);
   return token;
 };
+
 export default generateJWT;

@@ -1,29 +1,11 @@
-export enum TaskStatus {
-  INCOMPLETE = "INCOMPLETE",
-  COMPLETED = "COMPLETED",
+import { JwtPayload } from "jsonwebtoken";
+
+export interface UniqueTaskId {
+  userId: string;
+  taskId: string;
 }
 
-export enum Role {
-  USER = "USER",
-  ADMIN = "ADMIN",
-}
-
-export interface Task {
-  id: string;
-  title: string;
-  description: string;
-  dueDate: Date;
-  status: TaskStatus;
-  isImportant: boolean;
-  createdAt: Date;
-}
-
-export interface User {
+export interface JWTUserPayload extends JwtPayload {
   id: string;
   name: string;
-  email: string;
-  password: string;
-  createdAt: Date;
-  role: Role;
-  tasks?: Task[] | undefined;
 }
