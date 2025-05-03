@@ -1,1 +1,38 @@
+@import url("https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
+
 @import "tailwindcss";
+@import "tailwindcss-animated";
+
+@theme {
+  --font-fredoka: "Fredoka", sans-serif;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+  width: 1.5rem;
+  height: 1.5rem;
+  cursor: pointer;
+}
+
+.slide-bg {
+  /* Your gradient or base background here */
+  background: linear-gradient(
+    to right,
+    rgba(209, 213, 219, 0.2) 20%,
+    /* gray-300/20 */ #212121 50% /* rgb(33,33,33) */
+  );
+  background-size: 200% 100%;
+  background-position: right bottom;
+  transition: background-position 0.4s ease-out;
+}
+
+/* Only non-active items get the slide + fade-on-hover */
+.slide-bg:not(.active):hover {
+  background-position: left bottom; /* slide effect */
+  background-color: rgba(209, 213, 219, 0.05); /* gray-300/5 overlay */
+}
+
+/* Active state (index === 0) — stays gray-300/20, no hover override */
+.slide-bg.active {
+  background: rgba(209, 213, 219, 0.2); /* gray-300/20 */
+}

@@ -36,6 +36,10 @@ export const createTaskPrisma = async (userId: string, props: Partial<Task>): Pr
 };
 
 export const updateTaskPrisma = async ({ userId, taskId }: UniqueTaskId, props: Partial<Task>): Promise<Task> => {
+  if (!props) {
+    throw new BadRequest("Please provide at least a field to update");
+  }
+
   const userTaskFromDb = await prisma.task.findUnique({
     where: {
       id_userId: {
