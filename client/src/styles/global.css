@@ -7,6 +7,10 @@
   --font-fredoka: "Fredoka", sans-serif;
 }
 
+body {
+  background-color: rgba(0, 0, 0, 0.9);
+}
+
 input[type="date"]::-webkit-calendar-picker-indicator {
   filter: invert(1);
   width: 1.5rem;
