@@ -1,6 +1,6 @@
 import { useAppDispatch } from "../hooks/redux-toolkit";
+import { openTaskModal } from "../features/newTaskModal/newTaskModalSlice";
 import TaskCard from "./TaskCard";
-import { openTaskModal } from "../features/newTaskModal/new-task-modal";
 
 const TasksGrid = () => {
   const dispatch = useAppDispatch();
@@ -13,7 +13,10 @@ const TasksGrid = () => {
           <div className="h-1 w-12 rounded-xl bg-green-500"></div>
         </div>
 
-        <div className="relative h-12 w-12 cursor-pointer rounded-full border border-[rgb(37,37,37)] bg-[rgb(50,50,50)] duration-200 ease-in-out hover:bg-[rgb(58,58,58)]">
+        <div
+          onClick={() => dispatch(openTaskModal())}
+          className="relative h-12 w-12 cursor-pointer rounded-full border border-[rgb(37,37,37)] bg-[rgb(50,50,50)] duration-200 ease-in-out hover:bg-[rgb(58,58,58)]"
+        >
           <div className="translate absolute top-1/2 left-1/2 h-0.5 w-4 -translate-x-1/2 -translate-y-1/2 rounded-xl bg-gray-400" />
           <div className="translate absolute top-1/2 left-1/2 h-0.5 w-4 -translate-x-1/2 -translate-y-1/2 rotate-90 rounded-xl bg-gray-400" />
         </div>

@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
-import type { NewTaskModal } from "../../types/globalTypes";
+import type { INewTaskModal } from "../../types/globalTypes";
 
-const initialState: NewTaskModal = {
+const initialState: INewTaskModal = {
   isOpen: false,
 };
 

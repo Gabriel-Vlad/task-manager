@@ -1,5 +1,5 @@
 import { useAppDispatch } from "../hooks/redux-toolkit";
-import { closeTaskModal } from "../features/newTaskModal/new-task-modal";
+import { closeTaskModal } from "../features/newTaskModal/newTaskModalSlice";
 import { IoMdClose } from "react-icons/io";
 
 const NewTaskModal = () => {

@@ -1,5 +1,6 @@
 import { IoIosLogIn } from "react-icons/io";
 import { Link } from "react-router";
+import { IoMdArrowBack } from "react-icons/io";
 
 const Login = () => {
   return (
@@ -9,6 +10,10 @@ const Login = () => {
         <p className="font-fredoka mt-1 text-sm leading-tight text-gray-400">
           Login to get full access to your account, arrange and complete tasks and manage your time well.
         </p>
+
+        <Link to="/" className="absolute top-5 right-4">
+          <IoMdArrowBack className="mt-1 h-5 w-5 transition-opacity duration-200 ease-in-out hover:opacity-80" />
+        </Link>
 
         <div className="mt-3 flex flex-col justify-start gap-1">
           <label htmlFor="name" className="text-lg text-white">

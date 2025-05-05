@@ -1,8 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
-import type { ProfileModal } from "../../types/globalTypes";
-import { openTaskModal } from "../newTaskModal/new-task-modal";
+import type { IProfileModal } from "../../types/globalTypes";
+import { openTaskModal } from "../newTaskModal/newTaskModalSlice";
 
-const initialState: ProfileModal = {
+const initialState: IProfileModal = {
   isOpen: false,
 };
 
@@ -12,6 +12,7 @@ const profileModalSlice = createSlice({
   reducers: {
     openProfileModal: (state) => {
       state.isOpen = true;
+      console.log("open");
     },
     closeProfileModal: (state) => {
       state.isOpen = false;

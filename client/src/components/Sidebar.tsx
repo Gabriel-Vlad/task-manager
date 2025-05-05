@@ -1,13 +1,15 @@
 import ProfilePicture from "../assets/images/ProfilePicture.jpg";
-import type { NavItems } from "../types/globalTypes";
+import type { INavItems } from "../types/globalTypes";
 import { AiFillHome } from "react-icons/ai";
 import { FaTasks, FaClipboardList } from "react-icons/fa";
 import { IoMdCheckmark } from "react-icons/io";
 import { useAppDispatch, useAppSelector } from "../hooks/redux-toolkit";
-import { openProfileModal, closeProfileModal } from "../features/profileModal/profile-modal";
+import { openProfileModal, closeProfileModal } from "../features/profileModal/profileModalSlice";
 import ProfileModal from "./ProfileModal";
+import { Link } from "react-router";
+import { GoSignOut } from "react-icons/go";
 
-const navItems: NavItems[] = [
+const navItems: INavItems[] = [
   {
     label: "All Tasks",
     icon: <AiFillHome className="h-5 w-5 text-gray-400" />,
@@ -27,8 +29,10 @@ const Sidebar = () => {
   const dispatch = useAppDispatch();
 
   const { isOpen } = useAppSelector((state) => state.profileModal);
+  const { isLoggedIn } = useAppSelector((state) => state.auth);
 
   const handleOpenProfileModal = () => {
+    if (!isLoggedIn) return;
     if (!isOpen) {
       dispatch(openProfileModal());
     } else {
@@ -37,20 +41,31 @@ const Sidebar = () => {
   };
 
   return (
-    <nav className="mx-auto flex w-[13rem] flex-col rounded-xl border-2 border-[rgb(37,_37,_37)] bg-[rgb(33,33,33)]">
+    <nav className="relative mx-auto flex w-[13rem] flex-col rounded-xl border-2 border-[rgb(37,_37,_37)] bg-[rgb(33,33,33)]">
       <div
         className="relative mx-auto my-4 flex cursor-pointer items-center gap-2 rounded-xl px-3 py-2 transition-colors duration-1000 ease-in-out hover:bg-[rgb(25,25,25)]"
         onClick={handleOpenProfileModal}
       >
-        <div className="h-14 w-14">
-          <img src={ProfilePicture} alt="Pfp" className="h-auto w-full rounded-full object-contain" />
-        </div>
-        <div className="font-fredoka w-[4rem] text-lg leading-tight text-white">Stana Vlad</div>
+        {isLoggedIn ? (
+          <>
+            <div className="h-14 w-14">
+              <img src={ProfilePicture} alt="Pfp" className="h-auto w-full rounded-full object-contain" />
+            </div>
+            <div className="font-fredoka w-[4rem] text-lg leading-tight text-white">Stana Vlad</div>
+          </>
+        ) : (
+          <Link
+            to="/auth/login"
+            className="font-fredoka transform cursor-pointer text-xl text-white underline transition-opacity duration-200 ease-in-out hover:opacity-70 active:opacity-50"
+          >
+            Sign Up
+          </Link>
+        )}
 
-        {isOpen && <ProfileModal />}
+        {isOpen && isLoggedIn && <ProfileModal />}
       </div>
 
-      <ul className="mt-[11rem]">
+      <ul className="absolute top-2/5 right-0 left-0">
         {navItems.map((info, index) => {
           return (
             <li key={index} className={`slide-bg my-2 flex cursor-pointer items-center gap-4 px-8 py-2 ${index === 0 ? "active relative" : ""}`}>
@@ -63,12 +78,12 @@ const Sidebar = () => {
         })}
       </ul>
 
-      {/* <div className="group my-6 mt-auto inline-flex h-full max-h-fit w-full shrink-1 cursor-pointer items-center justify-center gap-3 px-4">
-        <GoSignOut className="h-6 w-6 text-gray-400 transition-colors duration-200 ease-in-out group-hover:text-gray-200" />
-        <p className="font-fredoka text-xl text-gray-400 transition-colors duration-200 ease-in-out group-hover:text-gray-200">
-          Sign Out
-        </p>
-      </div> */}
+      {isLoggedIn && (
+        <div className="group my-6 mt-auto inline-flex h-full max-h-fit w-full shrink-1 cursor-pointer items-center justify-center gap-3 px-4">
+          <GoSignOut className="h-6 w-6 text-gray-400 transition-colors duration-200 ease-in-out group-hover:text-gray-200" />
+          <p className="font-fredoka text-xl text-gray-400 transition-colors duration-200 ease-in-out group-hover:text-gray-200">Sign Out</p>
+        </div>
+      )}
     </nav>
   );
 };
