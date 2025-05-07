@@ -3,11 +3,11 @@ import { Link, useNavigate } from "react-router";
 import { IoMdArrowBack } from "react-icons/io";
 import { useAppDispatch } from "../hooks/redux-toolkit";
 import { useState } from "react";
-import type { FormEvent } from "react";
+import type { ChangeEvent, FormEvent } from "react";
 import { IUser } from "../types/globalTypes";
 import { useMutation } from "@tanstack/react-query";
-import { sendUserInfo } from "../api/user";
-import { setCredentials } from "../features/authentication/authenticationSlice";
+import { createUser } from "../api/user";
+import { signInStart, signInError, signInSuccess } from "../features/authentication/authenticationSlice";
 
 const Register = () => {
   const dispatch = useAppDispatch();
@@ -19,10 +19,12 @@ const Register = () => {
     password: "",
   });
 
-  const postMutation = useMutation({
-    mutationFn: () => sendUserInfo({ ...form }),
+  const signUpMutation = useMutation({
+    mutationFn: createUser,
+    onMutate: () => dispatch(signInStart()),
     onSuccess: (data) => {
-      dispatch(setCredentials({ id: data!.id, name: data!.name }));
+      const { id, name } = data!;
+      dispatch(signInSuccess({ id, name }));
       setForm({
         name: "",
         email: "",
@@ -31,13 +33,20 @@ const Register = () => {
       navigate("/");
     },
     onError: (error) => {
-      console.log(error);
+      dispatch(signInError(error));
     },
   });
 
+  const changeInput = (e: ChangeEvent<HTMLInputElement>, field: keyof IUser) => {
+    setForm((prev) => ({
+      ...prev,
+      [field]: e.target.value,
+    }));
+  };
+
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    postMutation.mutate();
+    signUpMutation.mutate({ ...form });
   };
 
   return (
@@ -66,14 +75,7 @@ const Register = () => {
             value={form.name}
             placeholder="Nicusor Dan"
             className="w-full rounded-lg bg-[rgb(22,22,22)] px-4 py-3 text-white placeholder:text-gray-400 focus:outline-none"
-            onChange={(e) =>
-              setForm((prev) => {
-                return {
-                  ...prev,
-                  [e.target.name]: e.target.value,
-                };
-              })
-            }
+            onChange={(e) => changeInput(e, "name")}
           />
         </div>
 
@@ -88,14 +90,7 @@ const Register = () => {
             value={form.email}
             placeholder="nicusordan@gmail.com"
             className="w-full rounded-lg bg-[rgb(22,22,22)] px-4 py-3 text-white placeholder:text-gray-400 focus:outline-none"
-            onChange={(e) =>
-              setForm((prev) => {
-                return {
-                  ...prev,
-                  [e.target.name]: e.target.value,
-                };
-              })
-            }
+            onChange={(e) => changeInput(e, "email")}
           />
         </div>
 
@@ -110,19 +105,11 @@ const Register = () => {
             value={form.password}
             placeholder="Password123"
             className="w-full rounded-lg bg-[rgb(22,22,22)] px-4 py-3 text-white placeholder:text-gray-400 focus:outline-none"
-            onChange={(e) =>
-              setForm((prev) => {
-                return {
-                  ...prev,
-                  [e.target.name]: e.target.value,
-                };
-              })
-            }
+            onChange={(e) => changeInput(e, "password")}
           />
         </div>
 
         <button
-          disabled={postMutation.isPending}
           type="submit"
           className="group mt-8 flex cursor-pointer items-center justify-center gap-1 rounded-4xl bg-emerald-500 px-4 py-2.5 transition-colors duration-200 ease-in-out hover:bg-emerald-600"
         >

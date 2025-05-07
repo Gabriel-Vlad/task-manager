@@ -15,12 +15,13 @@ const authMiddleware = async (req: Request, res: Response, next: NextFunction) =
   if (typeof payload === "string") {
     throw new Unauthenticated("Invalid token");
   }
-  // console.log(payload);
 
   req.user = {
     id: payload.id,
     name: payload.name,
   };
+
+  // console.log(payload);
 
   next();
 };

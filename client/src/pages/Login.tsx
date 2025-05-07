@@ -1,11 +1,59 @@
 import { IoIosLogIn } from "react-icons/io";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { IoMdArrowBack } from "react-icons/io";
+import type { IUser } from "../types/globalTypes";
+import { ChangeEvent, FormEvent, useState } from "react";
+import { useAppDispatch } from "../hooks/redux-toolkit";
+import { useMutation } from "@tanstack/react-query";
+import { verifyUserInfo } from "../api/user";
+import { signInStart, signInSuccess, signInError } from "../features/authentication/authenticationSlice";
 
 const Login = () => {
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+
+  const [form, setForm] = useState<IUser>({
+    name: "",
+    email: "",
+    password: "",
+  });
+
+  const signInMutation = useMutation({
+    mutationFn: verifyUserInfo,
+    onMutate: () => dispatch(signInStart()),
+    onSuccess: (data) => {
+      const { id, name } = data!;
+      console.log(id, name);
+
+      dispatch(signInSuccess({ id, name }));
+      setForm({
+        name: "",
+        email: "",
+        password: "",
+      });
+      navigate("/");
+    },
+    onError: (error) => dispatch(signInError(error)),
+  });
+
+  const changeInput = (e: ChangeEvent<HTMLInputElement>, field: keyof IUser) => {
+    setForm((prev) => ({
+      ...prev,
+      [field]: e.target.value,
+    }));
+  };
+
+  const handleSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    signInMutation.mutate({ ...form });
+  };
+
   return (
     <main className="relative min-h-screen w-full overflow-hidden">
-      <form className="absolute top-1/2 left-1/2 flex max-w-[29rem] -translate-x-1/2 -translate-y-1/2 transform flex-col rounded-xl border border-[rgb(50,50,50)] bg-[rgb(38,38,38)] px-5 py-5 text-white">
+      <form
+        onSubmit={handleSubmit}
+        className="absolute top-1/2 left-1/2 flex max-w-[29rem] -translate-x-1/2 -translate-y-1/2 transform flex-col rounded-xl border border-[rgb(50,50,50)] bg-[rgb(38,38,38)] px-5 py-5 text-white"
+      >
         <h1 className="font-fredoka text-xl font-medium">Welcome back to your Task Manager!</h1>
         <p className="font-fredoka mt-1 text-sm leading-tight text-gray-400">
           Login to get full access to your account, arrange and complete tasks and manage your time well.
@@ -25,6 +73,7 @@ const Login = () => {
             id="name"
             placeholder="Nicusor Dan"
             className="w-full rounded-lg bg-[rgb(22,22,22)] px-4 py-3 text-white placeholder:text-gray-400 focus:outline-none"
+            onChange={(e) => changeInput(e, "name")}
           />
         </div>
 
@@ -38,6 +87,7 @@ const Login = () => {
             id="email"
             placeholder="nicusordan@gmail.com"
             className="w-full rounded-lg bg-[rgb(22,22,22)] px-4 py-3 text-white placeholder:text-gray-400 focus:outline-none"
+            onChange={(e) => changeInput(e, "email")}
           />
         </div>
 
@@ -51,13 +101,13 @@ const Login = () => {
             id="password"
             placeholder="Password123"
             className="w-full rounded-lg bg-[rgb(22,22,22)] px-4 py-3 text-white placeholder:text-gray-400 focus:outline-none"
+            onChange={(e) => changeInput(e, "password")}
           />
         </div>
 
         <button
           type="submit"
           className="group mt-8 flex cursor-pointer items-center justify-center gap-2 rounded-4xl bg-emerald-500 px-4 py-2.5 transition-colors duration-200 ease-in-out hover:bg-emerald-600"
-          onClick={(e) => e.preventDefault()}
         >
           <p className="font-fredoka text-lg transition-colors duration-200 ease-in-out group-hover:text-white/90">Sign in</p>
           <IoIosLogIn className="mt-1 h-5 w-5 transition-colors duration-200 ease-in-out group-hover:text-white/90" />

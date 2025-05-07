@@ -3,6 +3,8 @@ import type { INewTaskModal } from "../../types/globalTypes";
 
 const initialState: INewTaskModal = {
   isOpen: false,
+  status: "idle",
+  error: null,
 };
 
 const newTaskModalSlice = createSlice({
@@ -15,8 +17,23 @@ const newTaskModalSlice = createSlice({
     closeTaskModal: (state) => {
       state.isOpen = false;
     },
+    createTaskStart: (state) => {
+      state.status = "pending";
+      state.error = null;
+      console.log("start");
+    },
+    createUserSuccess: (state) => {
+      state.status = "success";
+      state.error = null;
+      console.log("success");
+    },
+    createTaskError: (state, action) => {
+      state.status = "error";
+      state.error = new Error(action.payload);
+      console.log("error");
+    },
   },
 });
 
-export const { openTaskModal, closeTaskModal } = newTaskModalSlice.actions;
+export const { openTaskModal, closeTaskModal, createTaskStart, createUserSuccess, createTaskError } = newTaskModalSlice.actions;
 export default newTaskModalSlice.reducer;

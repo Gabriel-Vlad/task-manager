@@ -1,9 +1,10 @@
-import { useAppDispatch } from "../hooks/redux-toolkit";
+import { useAppDispatch, useAppSelector } from "../hooks/redux-toolkit";
 import { openTaskModal } from "../features/newTaskModal/newTaskModalSlice";
-import TaskCard from "./TaskCard";
+import TasksList from "./TasksList";
 
 const TasksGrid = () => {
   const dispatch = useAppDispatch();
+  const { isLoggedIn } = useAppSelector((state) => state.persistedState.auth);
 
   return (
     <article className="flex shrink-1 grow-1 flex-col overflow-hidden rounded-xl border border-[rgb(37,37,37)] bg-[rgb(33,33,33)]">
@@ -15,7 +16,7 @@ const TasksGrid = () => {
 
         <div
           onClick={() => dispatch(openTaskModal())}
-          className="relative h-12 w-12 cursor-pointer rounded-full border border-[rgb(37,37,37)] bg-[rgb(50,50,50)] duration-200 ease-in-out hover:bg-[rgb(58,58,58)]"
+          className={`relative h-12 w-12 cursor-pointer rounded-full border border-[rgb(37,37,37)] bg-[rgb(50,50,50)] duration-200 ease-in-out hover:bg-[rgb(58,58,58)] ${!isLoggedIn ? "pointer-events-none opacity-70" : ""}`}
         >
           <div className="translate absolute top-1/2 left-1/2 h-0.5 w-4 -translate-x-1/2 -translate-y-1/2 rounded-xl bg-gray-400" />
           <div className="translate absolute top-1/2 left-1/2 h-0.5 w-4 -translate-x-1/2 -translate-y-1/2 rotate-90 rounded-xl bg-gray-400" />
@@ -23,17 +24,15 @@ const TasksGrid = () => {
       </div>
 
       <div className="mb-4 grid auto-rows-fr grid-cols-1 gap-4 overflow-y-auto px-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        <TaskCard />
-        <TaskCard />
-        <TaskCard />
-        <TaskCard />
-        <TaskCard />
-        <TaskCard />
-        <TaskCard />
-        <TaskCard />
+        {isLoggedIn && <TasksList />}
+        {/* <TaskCard
+          title="Update Passwords"
+          description="Review online accounts and update passwords for better security. Use a password manager too keep track."
+          dueDate="13/10/2023"
+        /> */}
 
         <div
-          className="group flex h-full max-w-[19rem] cursor-pointer items-center justify-center rounded-xl border border-dashed border-[rgb(90,90,90)] transition-colors duration-300 ease-in-out hover:bg-[rgb(38,38,38)]"
+          className={`group flex h-[13rem] max-w-[19rem] cursor-pointer items-center justify-center rounded-xl border border-dashed border-[rgb(90,90,90)] transition-colors duration-300 ease-in-out hover:bg-[rgb(38,38,38)] ${!isLoggedIn ? "pointer-events-none" : ""}`}
           onClick={() => dispatch(openTaskModal())}
         >
           <div className="flex items-center gap-2">
@@ -42,7 +41,7 @@ const TasksGrid = () => {
               <div className="absolute top-1/2 left-1/2 h-0.5 w-4 -translate-x-1/2 -translate-y-1/2 rotate-90 rounded-xl bg-gray-400 transition-colors duration-300 ease-in-out group-hover:bg-gray-300" />
             </div>
             <p className="font-fredoka text-base font-medium text-gray-400 transition-colors duration-300 ease-in-out group-hover:text-gray-300">
-              Add new Task
+              {isLoggedIn ? "Add new Task" : "Please sign up to create tasks"}
             </p>
           </div>
         </div>

@@ -16,13 +16,34 @@ export interface IProfileModal {
 
 export interface INewTaskModal {
   isOpen: boolean;
+  status: "idle" | "pending" | "error" | "success";
+  error: Error | null;
+}
+
+export interface ITask {
+  id?: string;
+  title: string;
+  description: string;
+  dueDate: string;
+  status: "INCOMPLETE" | "COMPLETED";
+  isImportant?: boolean;
+}
+
+export interface ITaskInitialState {
+  tasks: ITask[];
+  error: Error | null;
+  isSuccess: boolean | null;
 }
 
 export interface IAuthState {
   isLoggedIn: boolean;
   id: string | null;
   name: string | null;
+  status: "idle" | "pending" | "error" | "success";
+  error: Error | null;
 }
+
+export type IAction = Partial<Pick<IAuthState, "id" | "name">>;
 
 export interface IUser {
   name: string;

@@ -2,14 +2,21 @@ import prisma from "../index";
 import type { Task } from "../generated/prisma";
 import { BadRequest } from "../errors";
 import { UniqueTaskId } from "../types/userTypes";
+import { formatToYYMMDD } from "../utils/format-to-YYMMDD";
 
-export const getAllTasksPrisma = async (userId: string): Promise<Task[]> => {
-  const tasks: Task[] = await prisma.task.findMany({
+export const getAllTasksPrisma = async (userId: string): Promise<(Omit<Task, "dueDate"> & { dueDate: string })[]> => {
+  let tasks: Task[] = await prisma.task.findMany({
     where: {
       userId: userId,
     },
   });
-  return tasks;
+  const newTasks = tasks.map((task) => {
+    return {
+      ...task,
+      dueDate: formatToYYMMDD(task.dueDate),
+    };
+  });
+  return newTasks;
 };
 
 export const createTaskPrisma = async (userId: string, props: Partial<Task>): Promise<Task> => {
@@ -19,11 +26,13 @@ export const createTaskPrisma = async (userId: string, props: Partial<Task>): Pr
     throw new BadRequest("Missing required fields");
   }
 
+  const newDueDate = new Date(dueDate);
+
   const task: Task = await prisma.task.create({
     data: {
       title,
       description,
-      dueDate,
+      dueDate: newDueDate,
       isImportant,
       status,
       user: {
