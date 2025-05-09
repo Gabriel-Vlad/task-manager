@@ -11,8 +11,6 @@ export const getAllTasks = async (req: Request, res: Response): Promise<void> =>
 
 export const createTask = async (req: Request, res: Response): Promise<void> => {
   const { id: userId } = req.user!;
-  console.log(req.body.isImportant, req.body.status);
-
   const createdTask: Task = await createTaskPrisma(userId, { ...req.body });
   res.status(StatusCodes.CREATED).json({ createdTask });
 };

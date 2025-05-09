@@ -25,12 +25,10 @@ const newTaskModalSlice = createSlice({
     createUserSuccess: (state) => {
       state.status = "success";
       state.error = null;
-      console.log("success");
     },
     createTaskError: (state, action) => {
       state.status = "error";
       state.error = new Error(action.payload);
-      console.log("error");
     },
   },
 });

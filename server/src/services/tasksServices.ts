@@ -9,6 +9,7 @@ export const getAllTasksPrisma = async (userId: string): Promise<(Omit<Task, "du
     where: {
       userId: userId,
     },
+    orderBy: { createdAt: "asc" },
   });
   const newTasks = tasks.map((task) => {
     return {
@@ -64,19 +65,23 @@ export const updateTaskPrisma = async ({ userId, taskId }: UniqueTaskId, props: 
 
   const { title: oldTitle, description: oldDescription, dueDate: oldDueDate, isImportant: oldIsImportant, status: oldStatus } = userTaskFromDb;
 
+  const newDueDate = typeof props.dueDate === "string" ? new Date(props.dueDate) : oldDueDate;
+
   const { title = oldTitle, description = oldDescription, dueDate = oldDueDate, isImportant = oldIsImportant, status = oldStatus } = props;
 
   const task: Task = await prisma.task.update({
     data: {
       title,
       description,
-      dueDate,
+      dueDate: newDueDate,
       isImportant,
       status,
     },
     where: {
-      userId: userId,
-      id: taskId,
+      id_userId: {
+        userId: userId,
+        id: taskId,
+      },
     },
   });
 

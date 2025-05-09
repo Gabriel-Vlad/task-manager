@@ -12,7 +12,6 @@ const profileModalSlice = createSlice({
   reducers: {
     openProfileModal: (state) => {
       state.isOpen = true;
-      console.log("open");
     },
     closeProfileModal: (state) => {
       state.isOpen = false;

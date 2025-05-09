@@ -8,8 +8,9 @@ import { openProfileModal, closeProfileModal } from "../features/profileModal/pr
 import ProfileModal from "./ProfileModal";
 import { Link } from "react-router";
 import { GoSignOut } from "react-icons/go";
-import { logout, logState } from "../features/authentication/authenticationSlice";
+import { logout } from "../features/authentication/authenticationSlice";
 import { logoutUser } from "../api/user";
+import { navigatePage } from "../features/pagination/paginationSlice";
 
 const navItems: INavItems[] = [
   {
@@ -32,6 +33,7 @@ const Sidebar = () => {
 
   const { isOpen } = useAppSelector((state) => state.profileModal);
   const { isLoggedIn, name } = useAppSelector((state) => state.persistedState.auth);
+  const { page } = useAppSelector((state) => state.pagination);
 
   const handleOpenProfileModal = () => {
     if (!isLoggedIn) return;
@@ -76,14 +78,14 @@ const Sidebar = () => {
         {navItems.map((info, index) => {
           return (
             <li
-              onClick={() => dispatch(logState())}
               key={index}
-              className={`my-2 flex items-center gap-4 px-8 py-2 ${index === 0 ? "active relative" : ""} ${!isLoggedIn ? "pointer-events-none opacity-50" : "slide-bg cursor-pointer"}`}
+              className={`my-2 flex items-center gap-4 px-8 py-2 ${index === page ? "active relative" : ""} ${!isLoggedIn ? "pointer-events-none opacity-50" : "slide-bg cursor-pointer"}`}
+              onClick={() => dispatch(navigatePage({ page: index }))}
             >
               {info.icon}
               <p className="font-fredoka grow-1 text-base font-medium text-gray-400">{info.label}</p>
 
-              {index === 0 && isLoggedIn && <div className="absolute top-0 right-0 bottom-0 w-1 rounded-tl-xl rounded-bl-xl bg-green-500"></div>}
+              {index === page && isLoggedIn && <div className="absolute top-0 right-0 bottom-0 w-1 rounded-tl-xl rounded-bl-xl bg-green-500"></div>}
             </li>
           );
         })}

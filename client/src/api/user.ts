@@ -12,8 +12,6 @@ export const createUser = async (userCredentials: IUser) => {
     },
   );
 
-  console.log(response);
-
   const { id, name } = response.data.user;
   return {
     id,
@@ -29,7 +27,6 @@ export const verifyUserInfo = async (userCredential: IUser) => {
       withCredentials: true,
     },
   );
-  console.log(response);
 
   const { id, name } = response.data.user;
   return {

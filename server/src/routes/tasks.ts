@@ -4,7 +4,6 @@ import authMiddleware from "../middleware/authMiddleware";
 
 const tasksRouter = express.Router();
 
-tasksRouter.route("/").all(authMiddleware).patch(updateTask).delete(deleteTask);
-tasksRouter.route("/").all(authMiddleware).get(getAllTasks).post(createTask);
+tasksRouter.route("/").all(authMiddleware).patch(updateTask).delete(deleteTask).get(getAllTasks).post(createTask);
 
 export default tasksRouter;

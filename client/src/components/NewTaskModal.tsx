@@ -6,7 +6,6 @@ import { useState } from "react";
 import type { ChangeEvent, FormEvent } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createUserTask } from "../api/tasks";
-// import { formatToYYMMDD } from "../utils/format-to-YYMMDD";
 
 const NewTaskModal = () => {
   const dispatch = useAppDispatch();
@@ -51,7 +50,7 @@ const NewTaskModal = () => {
   };
 
   return (
-    <section className="absolute inset-0 z-10 overflow-hidden bg-black/50" onClick={() => dispatch(closeTaskModal())}>
+    <section className="absolute inset-0 z-10 overflow-hidden bg-black/50">
       <form
         onClick={(e) => e.stopPropagation()}
         onSubmit={handleSubmit}
@@ -85,6 +84,7 @@ const NewTaskModal = () => {
             placeholder="e.g. Watch a video about Next.js"
             value={form.description}
             rows={4}
+            maxLength={200}
             className="mt-1.5 w-full resize-none rounded-lg bg-[rgb(22,22,22)] px-4 py-3 text-white placeholder:text-gray-400 focus:outline-none"
             onChange={(e) => changeInput(e, e.target.name as keyof ITask)}
           />

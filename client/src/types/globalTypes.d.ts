@@ -33,6 +33,7 @@ export interface ITaskInitialState {
   tasks: ITask[];
   error: Error | null;
   isSuccess: boolean | null;
+  filteredTasks: ITask[];
 }
 
 export interface IAuthState {
@@ -49,4 +50,19 @@ export interface IUser {
   name: string;
   email: string;
   password: string;
+}
+
+export interface IEditTask extends ITask {
+  isOpen: boolean;
+  submitStatus: "idle" | "pending" | "error" | "success";
+  error: Error | null;
+}
+
+export interface IEditTaskPayload {
+  data: ITask;
+  id: string;
+}
+
+export interface IPagination {
+  page: number;
 }

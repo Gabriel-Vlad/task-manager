@@ -23,8 +23,6 @@ const authSlice = createSlice({
       state.status = "success";
       state.id = id!;
       state.name = name!;
-
-      console.log(action.payload);
     },
     signInError: (state, action) => {
       state.status = "error";
@@ -33,12 +31,8 @@ const authSlice = createSlice({
     logout: () => {
       return initialState;
     },
-    logState: (state) => {
-      const { id, name, isLoggedIn, status, error } = state;
-      console.log(isLoggedIn, status, error, id, name);
-    },
   },
 });
 
-export const { signInStart, signInSuccess, signInError, logout, logState } = authSlice.actions;
+export const { signInStart, signInSuccess, signInError, logout } = authSlice.actions;
 export default authSlice.reducer;

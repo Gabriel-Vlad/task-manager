@@ -5,6 +5,8 @@ import authReducer from "./features/authentication/authenticationSlice";
 import userTasksReducer from "./features/userTasks/userTasks";
 import { persistReducer, persistStore } from "redux-persist";
 import storage from "redux-persist/lib/storage";
+import editTaskModalReducer from "./features/editTaskModal/editTaskModalSlice";
+import paginationReducer from "./features/pagination/paginationSlice";
 
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -23,6 +25,8 @@ export const store = configureStore({
     profileModal: profileModalReducer,
     newTaskModal: newTaskModalReducer,
     userTasks: userTasksReducer,
+    editTaskModal: editTaskModalReducer,
+    pagination: paginationReducer,
     persistedState,
   },
   middleware: (getDefaultMiddleware) =>

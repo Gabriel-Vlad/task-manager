@@ -1,16 +1,42 @@
 import { useAppDispatch, useAppSelector } from "../hooks/redux-toolkit";
 import { openTaskModal } from "../features/newTaskModal/newTaskModalSlice";
 import TasksList from "./TasksList";
+import { useQuery } from "@tanstack/react-query";
+import { getAllUserTasks } from "../api/tasks";
+import { useEffect } from "react";
+import { setUserTasks, setUserTasksError } from "../features/userTasks/userTasks";
+
+const titles: string[] = ["All Tasks", "Important!", "Completed!", "Do it Now"];
 
 const TasksGrid = () => {
   const dispatch = useAppDispatch();
   const { isLoggedIn } = useAppSelector((state) => state.persistedState.auth);
+  const { page } = useAppSelector((state) => state.pagination);
+
+  const tasksQuery = useQuery({
+    queryFn: getAllUserTasks,
+    queryKey: ["tasks"],
+  });
+
+  const { data: tasks, isError, error, isLoading } = tasksQuery;
+
+  useEffect(() => {
+    if (isError) {
+      dispatch(setUserTasksError(error));
+    } else {
+      dispatch(setUserTasks(tasks!));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tasks, dispatch]);
+
+  if (isLoading) return <div>Loading...</div>;
+  if (isError) return <div>There has been an error {tasksQuery.error.message}</div>;
 
   return (
     <article className="flex shrink-1 grow-1 flex-col overflow-hidden rounded-xl border border-[rgb(37,37,37)] bg-[rgb(33,33,33)]">
       <div className="mt-4 mb-4 flex items-center justify-between px-8 py-2">
         <div className="flex flex-col justify-between gap-2">
-          <p className="font-fredoka text-3xl font-medium text-white">All Tasks</p>
+          <p className="font-fredoka text-3xl font-medium text-white">{titles[page]}</p>
           <div className="h-1 w-12 rounded-xl bg-green-500"></div>
         </div>
 
