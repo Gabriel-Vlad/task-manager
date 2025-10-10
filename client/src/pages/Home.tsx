@@ -8,6 +8,11 @@ const Home = () => {
   const { isOpen: isOpenNewTask } = useAppSelector((state) => state.newTaskModal);
   const { isOpen: isOpenEditTask } = useAppSelector((state) => state.editTaskModal);
 
+  // -- IMPORTANT --
+  // -- LOGIN OR SIGN UP FOR THE SITE TO WORK PROPERLY
+  // -- IMPORTANT --
+
+
   return (
     <>
       <main className="relative flex min-h-screen w-full shrink-1 grow-1 overflow-hidden py-[2.5rem]">
