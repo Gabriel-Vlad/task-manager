@@ -9,9 +9,8 @@ const Home = () => {
   const { isOpen: isOpenEditTask } = useAppSelector((state) => state.editTaskModal);
 
   // -- IMPORTANT --
-  // -- LOGIN OR SIGN UP FOR THE SITE TO WORK PROPERLY
+  // Interface working incorrectly if not logged in
   // -- IMPORTANT --
-
 
   return (
     <>
