@@ -29,8 +29,8 @@ const TasksGrid = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tasks, dispatch]);
 
-  if (isLoading) return <div>Loading...</div>;
-  if (isError) return <div>There has been an error {tasksQuery.error.message}</div>;
+  if (isLoading && isLoggedIn) return <div>Loading...</div>;
+  if (isError && isLoggedIn) return <div>There has been an error {tasksQuery.error.message}</div>;
 
   return (
     <article className="flex shrink-1 grow-1 flex-col overflow-hidden rounded-xl border border-[rgb(37,37,37)] bg-[rgb(33,33,33)]">
