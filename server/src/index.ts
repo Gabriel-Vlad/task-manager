@@ -5,7 +5,12 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 
 import { PrismaClient } from "./generated/prisma";
-const prisma = new PrismaClient();
+// Never select password hashes unless a query explicitly opts in with `omit: { password: false }`.
+const prisma = new PrismaClient({
+  omit: {
+    user: { password: true },
+  },
+});
 
 import express from "express";
 const app = express();

@@ -8,11 +8,15 @@ const authMiddleware = async (req: Request, res: Response, next: NextFunction) =
   if (!token) {
     throw new Unauthenticated("User is not logged in");
   }
-  // console.log(token);
 
-  const payload: JwtPayload | string = jwt.verify(token, process.env.JWT_SECRET!);
+  let payload: JwtPayload | string;
+  try {
+    payload = jwt.verify(token, process.env.JWT_SECRET!, { algorithms: ["HS256"] });
+  } catch {
+    throw new Unauthenticated("Invalid token");
+  }
 
-  if (typeof payload === "string") {
+  if (typeof payload === "string" || !payload.id) {
     throw new Unauthenticated("Invalid token");
   }
 
@@ -20,8 +24,6 @@ const authMiddleware = async (req: Request, res: Response, next: NextFunction) =
     id: payload.id,
     name: payload.name,
   };
-
-  // console.log(payload);
 
   next();
 };

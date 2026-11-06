@@ -1,12 +1,12 @@
 import { StatusCodes } from "http-status-codes";
 import { Request, Response } from "express";
-import type { User } from "../generated/prisma";
+import type { SafeUser } from "../types/userTypes";
 import { registerUserPrisma, loginUserPrisma } from "../services/userServices";
 import generateJWT from "../utils/generate-jwt";
 import cookieOptions from "../utils/cookie-options";
 
 export const register = async (req: Request, res: Response): Promise<void> => {
-  const user: User = await registerUserPrisma({ ...req.body });
+  const user: SafeUser = await registerUserPrisma({ ...req.body });
 
   const token: string = generateJWT(user);
 
@@ -14,7 +14,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
 };
 
 export const login = async (req: Request, res: Response): Promise<void> => {
-  const user: User = await loginUserPrisma({ ...req.body });
+  const user: SafeUser = await loginUserPrisma({ ...req.body });
 
   const token: string = generateJWT(user);
 

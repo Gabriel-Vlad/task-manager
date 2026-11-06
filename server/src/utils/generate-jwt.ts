@@ -1,8 +1,7 @@
 import jwt, { SignOptions } from "jsonwebtoken";
-import type { User } from "../generated/prisma";
-import { JWTUserPayload } from "../types/userTypes";
+import type { JWTUserPayload, SafeUser } from "../types/userTypes";
 
-const generateJWT = (user: User) => {
+const generateJWT = (user: Pick<SafeUser, "id" | "name">) => {
   const { id, name } = user;
 
   const userData: Pick<JWTUserPayload, "id" | "name"> = {

@@ -131,7 +131,7 @@ const NewTaskModal = () => {
             onChange={(e: ChangeEvent<HTMLInputElement>) =>
               setForm((prev) => ({
                 ...prev,
-                ["isImportant"]: e.target.checked === true ? true : false,
+                ["isImportant"]: e.target.checked,
               }))
             }
           />

@@ -1,11 +1,12 @@
 import prisma from "../index";
-import { BadRequest, NotFound, Unauthenticated } from "../errors";
+import { BadRequest, Unauthenticated } from "../errors";
 import type { User } from "../generated/prisma";
 import comparePasswords from "../utils/compare-passwords";
 import { verifyEmail, verifyName, verifyPassword } from "../utils/verify-input";
 import hashInput from "../utils/hash-input";
+import type { SafeUser } from "../types/userTypes";
 
-export const registerUserPrisma = async (props: Partial<User>): Promise<User> => {
+export const registerUserPrisma = async (props: Partial<User>): Promise<SafeUser> => {
   const { name, email, password } = props;
 
   if (!name || !email || !password) {
@@ -16,10 +17,11 @@ export const registerUserPrisma = async (props: Partial<User>): Promise<User> =>
   verifyName(name);
   verifyPassword(password);
 
-  const userFromPrisma: User | null = await prisma.user.findUnique({
+  const userFromPrisma = await prisma.user.findUnique({
     where: {
       email,
     },
+    select: { id: true },
   });
 
   if (userFromPrisma) {
@@ -39,28 +41,26 @@ export const registerUserPrisma = async (props: Partial<User>): Promise<User> =>
   return user;
 };
 
-export const loginUserPrisma = async (props: Partial<User>): Promise<User> => {
+export const loginUserPrisma = async (props: Partial<User>): Promise<SafeUser> => {
   const { name, email, password } = props;
 
   if (!name || !email || !password) {
     throw new BadRequest("Missing required fields");
   }
 
+  // The only query that needs the password hash, so it opts back in explicitly.
   const user: User | null = await prisma.user.findUnique({
     where: {
       email,
     },
+    omit: { password: false },
   });
 
-  if (!user) {
-    throw new NotFound("No user has been found");
-  }
-
-  const isMatch = await comparePasswords(user.password, password);
-
-  if (!isMatch) {
+  // Same response for "no such user" and "wrong password" so emails can't be enumerated.
+  if (!user || !(await comparePasswords(user.password, password))) {
     throw new Unauthenticated("Invalid Credentials");
   }
 
-  return user;
+  const { password: _password, ...safeUser } = user;
+  return safeUser;
 };
